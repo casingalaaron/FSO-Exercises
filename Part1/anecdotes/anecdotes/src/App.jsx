@@ -22,7 +22,7 @@ const App = () => {
     <div>
       <Header title={course} />
       <Content part={courseInfo} />
-      <Total exercises={courseInfo}/>
+      <Total course={courseInfo}/>
   </div>)
 }
 
@@ -33,22 +33,23 @@ const Header = (course) => {
   </>)
 }
 
-  const Content = ({part}) => {
+  const Content = (courseInfo) => {
     
     return(
     <>
-      <p>{part[0].name} {part[0].amount}</p>
-      <p>{part[1].name} {part[1].amount}</p>
-      <p>{part[2].name} {part[2].amount}</p>
+      <p>{courseInfo.part[0].name + ": " + courseInfo.part[0].amount} </p>
+      <p>{courseInfo.part[1].name + ": " + courseInfo.part[1].amount} </p>
+      <p>{courseInfo.part[2].name + ": " + courseInfo.part[2].amount} </p>
     </>
     )
   }
 
-const Total = ({exercises}) => {
-
+const Total = (exercises) => {
+  console.log(exercises)
+  console.log(exercises.course[0].amount)
   return(
   <>
-  <p>Total: {exercises[0].amount + exercises[1].amount + exercises[2].amount}</p>
+    <p>total: {exercises.course[0].amount + exercises.course[1].amount + exercises.course[2].amount}</p>
   </>
   )
 }
