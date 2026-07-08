@@ -2,26 +2,24 @@ import Part from './Part.jsx'
 
 const App = () => {
   const course = 'Half Stack application development'
-  const part1 = 'Fundamentals of React'
-  const exercises1 = 10
-  const part2 = 'Using props to pass data'
-  const exercises2 = 7
-  const part3 = 'State of a component'
-  const exercises3 = 14
-
-  const courseInfo = [
-      
-    {"name":part1, "amount": exercises1},
-    {"name":part2, "amount": exercises2},
-    {"name":part3, "amount": exercises3},
-  ]
+  const part1 ={
+    name : "Fundamentals of React",
+    exercises: 10
+  }
+  const part2 = {
+    name : "Using props to pass data",
+    exercises: 7
+  }
+  const part3 = {
+    name : "State of a component",
+    exercises: 14
+  }
 
   return(
-    
     <div>
       <Header title={course} />
-      <Content course={courseInfo} />
-      <Total course={courseInfo}/>
+      <Content part1={part1} part2={part2} part3={part3}/> 
+      <Total course={part1.exercises + part2.exercises + part3.exercises}/>
   </div>) 
 }
 
@@ -33,11 +31,12 @@ const Header = (course) => {
 }
 
   const Content = (props) => {
+    console.log(props)
     return(
     <>
-      <Part part={props.course[0]}/>
-      <Part part={props.course[1]}/>
-      <Part part={props.course[2]}/>
+      <Part content={props.part1}/>
+      <Part content={props.part2}/>
+      <Part content={props.part3}/>
     </>
     )
   }
@@ -45,7 +44,7 @@ const Header = (course) => {
   const Total = (exercises) => {
   return(
   <>
-    <p>total: {exercises.course[0].amount + exercises.course[1].amount + exercises.course[2].amount}</p>
+    <p>total: {exercises.course}</p>
   </>
   )
 }

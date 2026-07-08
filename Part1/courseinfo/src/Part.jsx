@@ -2,7 +2,7 @@ const Part = (props) => {
     console.log("Part: " + props)
     return(
         <>
-        <p>{props.part.name}:  {props.part.amount}</p>
+        <p>{props.content.name}:  {props.content.amount}</p>
         </>
     )
 
