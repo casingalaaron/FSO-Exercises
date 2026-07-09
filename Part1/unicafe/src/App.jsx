@@ -4,18 +4,15 @@ function App() {
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
-  const [isFeedbackEmpty, setIsFeedBackEmpty] = useState(false) 
+  const isFeedbackEmpty = good!==0 || neutral!==0 || bad!==0? true : false
 
   function handleGood(){
     setGood(good + 1)
-    setIsFeedBackEmpty(true)
   }
   function handleNeutral(){
     setNeutral(neutral + 1)
-    setIsFeedBackEmpty(true)
   }
   function handleBad(){
-    setBad(bad + 1)
   }
 
   return (
