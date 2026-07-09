@@ -4,8 +4,6 @@ function App() {
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
-  const total = good + neutral + bad
-  const average = Math.floor(((good - bad)/total) * 100)
 
   function handleGood(){
     setGood(good + 1)
@@ -23,13 +21,24 @@ function App() {
       <button onClick={handleGood}>good</button>
       <button onClick={handleNeutral}>neutral</button>
       <button onClick={handleBad}>bad</button>
+      <Statistics good={good} neutral={neutral} bad={bad} />
+    </div>
+  )
+}
+
+const Statistics = ({good, neutral, bad}) => {
+  const total = good + neutral + bad
+  const average = Math.floor(((good - bad)/total) * 100)
+
+  return(
+    <>
       <h1>Statistics</h1>
       Good:{good}<br/>
       Neutral: {neutral}<br/>  
       Bad: {bad}<br/>
       Total: {total}<br/>
       Average: {average ? average : 0}%
-    </div>
+    </>
   )
 }
 
