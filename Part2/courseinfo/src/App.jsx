@@ -1,5 +1,4 @@
 import Course from './Course'
-import Total from './components/Total'
 
 const App = () => {
   const courses = [
