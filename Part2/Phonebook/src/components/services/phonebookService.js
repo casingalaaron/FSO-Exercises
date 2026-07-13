@@ -17,7 +17,7 @@ const Create = object => {
 }
 
 const Edit = (id, newData) => {
-    const request = axios.post(baseURL, newData)
+    const request = axios.patch(baseURL.concat(`/${id}`), newData)
     return request.then(response => response.data)
 }
 const Delete = id => {
@@ -25,4 +25,4 @@ const Delete = id => {
     return request.then(request => request.status)
 }
 
-export default { getAll, getOne, Create, Delete }
+export default { getAll, getOne, Create, Delete, Edit }

@@ -18,7 +18,7 @@ const App = () => {
   }  
 
   return (
-    <div>{persons.map((item) => console.log(item))}
+    <div>
       <h2>Phonebook</h2>
       <Filter input={input} handleInput={handleInput} />
       <h2>Add Person</h2>

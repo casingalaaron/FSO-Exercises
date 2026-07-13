@@ -29,9 +29,18 @@ const PersonForm = ({persons, setPersons}) => {
         .then(response => setPersons(persons.concat(response)))
       }
       else{
-        alert(` ${newName} is already added to the phonebook`)
-        setNewName('')
-        setnewNumber('')
+        const existingPerson = persons.find(person => person.name === newName)
+        if(window.confirm(`${existingPerson.name} is already added to phonebook, replace the name with new one?`)){
+          const newPersons = {'name': existingPerson.name, 'number': newNumber}
+          phonebookService
+          .Edit(existingPerson.id, newPersons)
+          .then(updatedPerson => {
+            setPersons(persons.map(person => person.id !== existingPerson.id? person : updatedPerson ))
+            setNewName('')
+            setnewNumber('')
+          })
+        }
+        
       }
     }
   }
