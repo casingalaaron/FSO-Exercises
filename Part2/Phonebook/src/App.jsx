@@ -3,23 +3,19 @@ import axios from 'axios'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import phonebookService from './components/services/phonebookService'
 
 const App = () => {
   const [persons, setPersons] = useState([])
-  
   const [input, setInput] = useState('')
+
+  useEffect(() => {phonebookService.getAll().then(result => { 
+    setPersons(result)})
+  }, [])
+  
   const handleInput = (event) => {
   setInput(event.target.value)
   }  
-
-  useEffect(() => {
-    axios
-    .get('http://localhost:3002/persons')
-    .then(response => {
-      console.log("Promises fulfilled")
-      setPersons(response.data)
-    })
-  }, [])
 
   return (
     <div>{persons.map((item) => console.log(item))}
@@ -28,7 +24,7 @@ const App = () => {
       <h2>Add Person</h2>
       <PersonForm persons={persons} setPersons={setPersons}/>
       <h2>Numbers</h2>
-      <Persons persons={persons} input={input}/>
+      <Persons persons={persons} setPersons={setPersons} input={input}/>
     </div>
   )
 }

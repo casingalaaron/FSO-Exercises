@@ -1,48 +1,44 @@
 import { useState } from 'react'
+import axios from 'axios'
+import phonebookService from './services/phonebookService'
 
 const PersonForm = ({persons, setPersons}) => {
     
     const [newName, setNewName] = useState('')
-    const [newNumber, setNewBumber] = useState('')
+    const [newNumber, setnewNumber] = useState('')
 
     const handleNumber = (event) => {
-    setNewBumber(event.target.value)
+      setnewNumber(event.target.value)
     }
 
     const handleNewName = (event) => {
-        setNewName(event.target.value)
+      setNewName(event.target.value)
     }
 
     const AddPerson = (event) => {
     event.preventDefault()
     const isExisting = handleDuplicate(persons, newName)
-    if(!isExisting){
-      if(newName !=='' && newNumber !==''){  
-        let latestId = persons.length
-        const newObject = [...persons,{
-        name: newName,
-        number: newNumber,
-        id: (latestId + 1)
-        }]
-        setPersons(newObject)
-        setNewName('')
-        setNewNumber('')
-        }
-      else{
-        alert("fill up all information before adding")
-      }
-      }
+    
+    if(newName ==='' || newNumber ===''){
+      alert("fill up all information before adding")
+    }
     else{
-      alert(` ${newName} is already added to the phonebook`)
-      setNewName('')
+      if(!isExisting){
+        phonebookService
+        .Create({name:newName, number: newNumber})
+        .then(response => setPersons(persons.concat(response)))
+      }
+      else{
+        alert(` ${newName} is already added to the phonebook`)
+        setNewName('')
+        setnewNumber('')
+      }
     }
   }
 
   const handleDuplicate = (array,newName) => {
-    const isExisting = array.map((item) => item.name === newName)
-    const result = isExisting.includes(true)
-    return result
-}
+    return array.some(persons => persons.name === newName)
+  }
 
     return(
         <form onSubmit={AddPerson}>
