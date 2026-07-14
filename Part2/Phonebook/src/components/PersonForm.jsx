@@ -2,7 +2,7 @@ import { useState } from 'react'
 import axios from 'axios'
 import phonebookService from './services/phonebookService'
 
-const PersonForm = ({persons, setPersons}) => {
+const PersonForm = ({persons, setPersons, setNotificationMessage}) => {
     
     const [newName, setNewName] = useState('')
     const [newNumber, setnewNumber] = useState('')
@@ -26,7 +26,15 @@ const PersonForm = ({persons, setPersons}) => {
       if(!isExisting){
         phonebookService
         .Create({name:newName, number: newNumber})
-        .then(response => setPersons(persons.concat(response)))
+        .then(response => {
+          setPersons(persons.concat(response))
+          setNewName('')
+          setnewNumber('')
+          setNotificationMessage(`Added ${newName}`)
+          setTimeout(() => {
+            setNotificationMessage(null)
+          }, 3000)
+        })
       }
       else{
         const existingPerson = persons.find(person => person.name === newName)
@@ -38,9 +46,12 @@ const PersonForm = ({persons, setPersons}) => {
             setPersons(persons.map(person => person.id !== existingPerson.id? person : updatedPerson ))
             setNewName('')
             setnewNumber('')
-          })
+            setNotificationMessage(`Replaced ${newName} number`)
+            setTimeout(() => {
+              setNotificationMessage(null)
+            }, 3000)
+          }) 
         }
-        
       }
     }
   }

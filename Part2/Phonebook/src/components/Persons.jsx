@@ -1,6 +1,6 @@
 import phonebookService from "./services/phonebookService"
 
-const Persons = ({persons, setPersons, input}) => {
+const Persons = ({persons, setPersons, input, setNotificationMessage}) => {
     const phonebookToShow = !input ?  persons : persons.filter((item) => item.name.toLowerCase().includes(input.toLowerCase()) || item.number.includes(input))
 
     function handleDelete(id){
@@ -10,9 +10,17 @@ const Persons = ({persons, setPersons, input}) => {
             .Delete(id)
             .then(() => {
                 setPersons(persons.filter((item) => item.id !== id))
-                alert("Succesfully deleted")
+                setNotificationMessage(`${person.name} are successfully deleted`)
+                setTimeout(() => {
+                    setNotificationMessage(null)
+                }, 3000)
             })
-            
+            .catch(error => {
+                setNotificationMessage(`Information of ${person.name} has already been removed from server`)
+                setTimeout(() => {
+                    setNotificationMessage(null)
+                }, 3000)
+                })
         }
     }
 
