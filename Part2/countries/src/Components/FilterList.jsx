@@ -1,4 +1,5 @@
-const FilterList = ({ListItems}) => {
+const FilterList = ({ListItems, clickHandler}) => {
+    
 
     if(ListItems === null || ListItems.length === 0){
         return null
@@ -7,7 +8,10 @@ const FilterList = ({ListItems}) => {
         return(
             <div>
                 <ul>
-                    {ListItems.map(country => <li key={country.cca3}>{country.name.common}</li>)}
+                    {ListItems.map(country => 
+                    <li key={country.cca3}>{country.name.common}
+                     <button onClick={() => clickHandler(country)}>Show</button>
+                    </li>)}
                 </ul>
             </div>
         )
