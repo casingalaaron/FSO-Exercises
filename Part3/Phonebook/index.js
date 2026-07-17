@@ -76,7 +76,7 @@ app.post('/api/persons', (req, res) => {
         });
     }
     else if(existingName.includes(body.name)){
-        return res.status(400).json({"error": "The name already exists in the phonebook"})
+        return res.status(400).json({"error": "name must be unique"})
     }
 
     const person = {
