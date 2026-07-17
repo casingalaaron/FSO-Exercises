@@ -1,8 +1,14 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 
 const PORT = 3001
 app.use(express.json())
+morgan.token('body', (req, res) => {
+    if(req.method === 'POST')
+        return JSON.stringify(req.body)
+})
+app.use(morgan(':method :url :status :res[content-length] :response-time ms :body '))
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
@@ -46,7 +52,7 @@ app.get('/api/persons/:id', (req, res) => {
         res.json(person)
     }
     else{
-        res.status(404).end()
+        res.status(404).json({ "error" : ` can't found id of ${id}`})
     }
 })
 app.delete('/api/persons/:id', (req, res) => {
@@ -54,7 +60,7 @@ app.delete('/api/persons/:id', (req, res) => {
     const person = data.find(item => item.id === id)
     
     if(!person){
-        res.status(404).json(
+        return res.status(404).json(
             { "error": "Person not found"}
         )
     }
