@@ -1,8 +1,17 @@
 const express = require('express')
 const app = express()
+const cors = require('cors')
+const morgan = require('morgan')
 
 const PORT = 3001
 app.use(express.json())
+app.use(cors())
+morgan.token('body', (req, res) => {
+    if(req.method === 'POST')
+        return JSON.stringify(req.body)
+})
+app.use(morgan(':method :url :status :res[content-length] :response-time ms :body '))
+app.use(express.static('dist'))
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
@@ -46,7 +55,7 @@ app.get('/api/persons/:id', (req, res) => {
         res.json(person)
     }
     else{
-        res.status(404).end()
+        res.status(404).json({'error' : `id of ${id} not found`})
     }
 })
 app.delete('/api/persons/:id', (req, res) => {
@@ -86,5 +95,5 @@ app.post('/api/persons', (req, res) => {
     }
 
     data = data.concat(person)
-    res.json(data)
+    res.json(person)
 })
