@@ -27,7 +27,7 @@ const person = new Person({
 if(process.argv.length === 3){
     Person.find({}).then(result => {
         result.forEach(person => {
-            console.log(person)
+            console.log(person.name,person.number)
         })
         mongoose.connection.close()
     })
