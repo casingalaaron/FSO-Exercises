@@ -1,12 +1,10 @@
 const express = require('express')
 const app = express()
-const cors = require('cors')
 const morgan = require('morgan')
 const Person = require('./models/persons')
 
 const PORT = 3001
 app.use(express.json())
-app.use(cors())
 morgan.token('body', (req, res) => {
     if(req.method === 'POST')
         return JSON.stringify(req.body)
@@ -17,23 +15,42 @@ app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
 
-app.get('/api/persons', (req, res) => {
+const errorHandler = (error, req, res, next) => {
+    const id = req.params.id
+    console.log(error)
+
+    if(error.name === 'CastError'){
+        return res.status(404).json({'error': `id of ${id} not found`})
+    }
+
+    next(error)
+}
+const validatePerson = (req, res, next) => {
+    const body = req.body
+
+    if(!body.name || !body.number){
+        return res.status(400).json({
+            'error': "name or number are missing"
+        })
+    }
+    next()
+}
+
+app.get('/api/persons', (req, res, next) => {
     Person
     .find({})
     .then(persons => {
         res.json(persons)
     })
-    .catch(error => {
-        res.status(404).json({'error' : error})
-    })
+    .catch(error => next(error))
 })
 
-app.get('/api/info', (req, res) => {
+app.get('/api/info', (req, res, next) => {
     const personQuantity = Person.length
     const now = new Date()
     res.send(`<p>Phonebook has info for ${personQuantity} people</p><p>${now}</p>`)
 })
-app.get('/api/persons/:id', (req, res) => {
+app.get('/api/persons/:id', (req, res, next) => {
     const id = req.params.id
     
     Person
@@ -42,10 +59,9 @@ app.get('/api/persons/:id', (req, res) => {
         res.json(person)
     })
     .catch(error => {
-        res.status(404).json({'error': `id of ${id} not found`})
-    })
+        next(error)})
 })
-app.delete('/api/persons/:id', (req, res) => {
+app.delete('/api/persons/:id', (req, res, next) => {
     const id = req.params.id
     
     Person
@@ -53,16 +69,11 @@ app.delete('/api/persons/:id', (req, res) => {
     .then(deletedPerson => {
         res.json({'message' : `Successfully deleted ${deletedPerson.name}.`})
     })
-    .catch(() => {
-        res.status(404).json({'error': `id of ${id} not found`})
-    })
+    .catch(error => next(error))
 })
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
     const body = req.body
-    if(!body || !body.name || !body.number){
-        return res.status(400).json({'error': "name or number are missing"})
-    }
 
     Person
     .findOne({'name' : body.name})
@@ -80,4 +91,15 @@ app.post('/api/persons', (req, res) => {
             })
         }
     })
+})
+
+app.patch('/api/persons/:id', (req, res, next) => {
+    const body = req.body
+
+    Person
+    .findOneAndUpdate({'name': body.name}, {$set:{'number': body.number}}, {returnDocument: 'after'})
+    .then(updatedPerson => {
+        res.json(updatedPerson)
+    })
+    .catch(error => next(error))
 })
