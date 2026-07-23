@@ -7,7 +7,7 @@ const PORT = 3001
 app.use(express.json())
 morgan.token('body', (req, res) => {
     if(req.method === 'POST')
-        return JSON.stringify(req.body)
+        return res.json(req.body)
 })
 app.use(morgan(':method :url :status :res[content-length] :response-time ms :body '))
 app.use(express.static('dist'))
@@ -21,6 +21,9 @@ const errorHandler = (error, req, res, next) => {
 
     if(error.name === 'CastError'){
         return res.status(404).json({'error': `id of ${id} not found`})
+    }
+    else if(error.name === 'ValidationError'){
+        return res.status(400).json({error: error.message})
     }
 
     next(error)
@@ -45,7 +48,7 @@ app.get('/api/persons', (req, res, next) => {
     .catch(error => next(error))
 })
 
-app.get('/api/info', (req, res, next) => {
+app.get('/api/info', (req, res) => {
     const personQuantity = Person.length
     const now = new Date()
     res.send(`<p>Phonebook has info for ${personQuantity} people</p><p>${now}</p>`)
@@ -72,7 +75,7 @@ app.delete('/api/persons/:id', (req, res, next) => {
     .catch(error => next(error))
 })
 
-app.post('/api/persons', (req, res, next) => {
+app.post('/api/persons', validatePerson, (req, res, next) => {
     const body = req.body
 
     Person
@@ -87,10 +90,15 @@ app.post('/api/persons', (req, res, next) => {
                 "number" : body.number
             })
             .then(newPerson => {
-                return res.json(newPerson)
+                res.json(newPerson)
+            })
+            .catch(error => {
+                console.log(error)
+                next(error)
             })
         }
     })
+    .catch(error => next(error))
 })
 
 app.patch('/api/persons/:id', (req, res, next) => {
@@ -103,3 +111,5 @@ app.patch('/api/persons/:id', (req, res, next) => {
     })
     .catch(error => next(error))
 })
+
+app.use(errorHandler)
