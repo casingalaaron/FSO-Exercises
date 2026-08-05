@@ -36,7 +36,7 @@ describe('favorite', () => {
     test("with multiple blogs", () => {
         assert.deepStrictEqual(listHelper.favoriteBlog(mockData1), {id:3, likes:28})
     })
-    test("with multiple blog of same likes accumulated", () => {
+    test("with multiple blogs of same likes accumulated", () => {
         assert.deepStrictEqual(listHelper.favoriteBlog(mockData2),{id:7, likes:20})
     })
 })
